@@ -59,13 +59,6 @@ userSchema.methods.generateToken = async function (){
     return jwt.sign({_id: this._id}, process.env.SECRET_KEY);
 }
 
-/*userSchema.methods.getResetPasswordToken = async function (){
-    const resetToken = crypto.randomBytes(20).toString("hex");
-    console.log(resetToken);
-    this.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-    this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
-    return resetToken
-}*/
 userSchema.methods.getResetPasswordToken = function () {
     const resetToken = crypto.randomBytes(20).toString("hex");
   

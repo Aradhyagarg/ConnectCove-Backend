@@ -115,63 +115,28 @@ exports.likeAndUnlikePost = async (req, res) => {
       });
     }
   };
-  
-/*exports.likeAndUnlikePost = async (req, res) => {
-    try {
-        const post = await Post.findById(req.params.id);
-
-        if (!post) {
-            return res.status(404).json({
-                success: false,
-                message: "Post not found"
-            });
-        }
-
-        if (post.likes.includes()) {
-            const index = post.likes.indexOf(req.user._id);
-            post.likes.splice(index, 1);
-
-            return res.status(200).json({ success: true, message: "Post Unlike" });
-        }
-        else {
-            post.likes.push(req.user._id);
-            await post.save();
-            return res.status(200).json({ success: true, message: "Post Liked" });
-        }
-
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Internal Server Error"
-        });
-    }
-}*/
 
 exports.getPostOfFollowing = async (req, res) => {
     try {
-        const user = await User.findById(req.user._id);
-
-        const posts = await Post.find(
-            {
-                owner: {
-                    $in: user.following
-                }
-            }
-        ).populate("owner likes comments.user")
-        //populate("following", "posts");
-
-        res.status(201).json({
-            success: true,
-            posts:posts.reverse(),
-        });
+      const user = await User.findById(req.user._id);
+  
+      const posts = await Post.find({
+        owner: {
+          $in: user.following,
+        },
+      }).populate("owner likes comments.user");
+  
+      res.status(200).json({
+        success: true,
+        posts: posts.reverse(),
+      });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Internal Server Error"
-        });
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
     }
-}
+  };
 
 exports.updateCaption = async (req, res) => {
     try {
@@ -219,8 +184,6 @@ exports.commentOnPost = async (req, res) => {
 
         let commentIndex = -1;
 
-        // Checking if comment already exists
-
         post.comments.forEach((item, index) => {
             if (item.user.toString() === req.user._id.toString()) {
                 commentIndex = index;
@@ -266,8 +229,6 @@ exports.deleteComment = async (req, res) => {
           message: "Post not found",
         });
       }
-  
-      // Checking If owner wants to delete
   
       if (post.owner.toString() === req.user._id.toString()) {
         if (req.body.commentId === undefined) {
