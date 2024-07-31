@@ -228,7 +228,6 @@ exports.deleteProfile = async (req, res) => {
             post.deleteOne();
         }
 
-        // Removing User from Followers FolLowing
         for (let i = 0; i < followers.length; i++) {
             const follower = await User.findById(followers[i]);
             const index = follower.following.indexOf(userId);
@@ -236,7 +235,6 @@ exports.deleteProfile = async (req, res) => {
             await follower.save();
         }
 
-        //Removing User from followings follow
         for (let i = 0; i < following.length; i++) {
             const follows = await User.findById(following[i]);
             const index = follows.followers.indexOf(userId);
@@ -244,7 +242,6 @@ exports.deleteProfile = async (req, res) => {
             await follows.save();
         }
 
-        //Removing all comments of user from post
         const allPosts = await Post.find();
         for(let i=0; i<allPosts.length; i++){
             const post = await Post.findById(allPosts[i]._id);
@@ -257,7 +254,6 @@ exports.deleteProfile = async (req, res) => {
             await post.save();
         }
 
-        //Removing all likes of user from post
         for(let i=0;i<allPosts.length;i++){
             const post = await Post.findById(allPosts[i]._id);
             for(let j=0;j<post.likes.length;i++){
